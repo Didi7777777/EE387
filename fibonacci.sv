@@ -58,3 +58,71 @@ module fibonacci(
     end
 
 endmodule
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module fibonacci(
+    input logic clk, 
+    input logic reset,
+    input logic [15:0] din,
+    input logic start,
+    output logic [15:0] dout,
+    output logic done
+);
+
+    enum logic [1:0] {IDLE, CALC, DONE} state, next_state;
+    logic [15:0] num1, num2;
+    logic [15:0] count;
+
+    // State transition logic
+    always_ff @(posedge clk or posedge reset) begin
+        if (reset) begin
+            state <= IDLE;
+            dout <= 0;
+            done <= 0;
+            num1 <= 0;
+            num2 <= 1;
+            count <= 0;
+        end else begin
+            state <= next_state;
+        end
+    end
+
+    always_ff @(posedge clk) begin
+        if (state == CALC) begin
+            if (count < din) begin
+                num1 <= num2;
+                num2 <= num1 + num2;
+                count <= count + 1;
+            end
+            if (count == din) begin
+                dout <= num1;
+            end
+        end
+    end
+
+    // Next state logic
+    always_comb begin
+        next_state = state; // Default to staying in the same state
+        case (state)
+            IDLE: if (start) next_state = CALC;
+            CALC: if (count >= din) next_state = DONE;
+            DONE: if (!start) next_state = IDLE;
+            default: next_state = IDLE;
+        endcase
+    end
+endmodule
+
