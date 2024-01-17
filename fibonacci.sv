@@ -7,57 +7,53 @@ module fibonacci(
     output logic done
 );
 
-    enum logic [1:0] {IDLE, CALCULATE, DONE} state, next_state;
-    logic [15:0] a, b, next_a, next_b;
-    logic [15:0] count, next_count;
+    // Local logic signals
+    enum logic [1:0] {IDLE, CALCULATING, DONE} state;
+    logic [15:0] fib0, fib1, temp;
+    logic [4:0] count;
 
-    // State transition
-    always_ff @(posedge clk or posedge reset) begin
+    // State Machine and Logic
+    always_ff @(posedge clk, posedge reset) begin
         if (reset) begin
             state <= IDLE;
-            a <= 0;
-            b <= 1;
+            fib0 <= 0;
+            fib1 <= 1;
             count <= 0;
+            done <= 0;
         end else begin
-            state <= next_state;
-            a <= next_a;
-            b <= next_b;
-            count <= next_count;
+            case (state)
+                IDLE: begin
+                    if (start) begin
+                        if (din == 0 || din == 1) begin
+                            dout <= din;
+                            done <= 1;
+                            state <= DONE;
+                        end else begin
+                            dout <= 0;
+                            count <= din - 2;  // Minus two because first two Fibonacci numbers are set
+                            state <= CALCULATING;
+                        end
+                    end
+                end
+                CALCULATING: begin
+                    temp <= fib0 + fib1;
+                    fib0 <= fib1;
+                    fib1 <= temp;
+                    if (count == 0) begin
+                        dout <= temp;
+                        done <= 1;
+                        state <= DONE;
+                    end else begin
+                        count <= count - 1;
+                    end
+                end
+                DONE: begin
+                    if (!start) begin
+                        done <= 0;
+                        state <= IDLE;
+                    end
+                end
+            endcase
         end
     end
-
-    // Next state logic
-    always_comb begin
-        next_state = state;
-        next_a = a;
-        next_b = b;
-        next_count = count;
-        done = 1'b0;
-        dout = 0;
-
-        case (state)
-            IDLE: begin
-                if (start) begin
-                    next_state = CALCULATE;
-                    next_count = din;
-                end
-            end
-            CALCULATE: begin
-                if (count > 0) begin
-                    next_a = b;
-                    next_b = a + b;
-                    next_count = count - 1;
-                end else begin
-                    next_state = DONE;
-                    dout = a;
-                end
-            end
-            DONE: begin
-                done = 1'b1;
-                next_state = IDLE;
-            end
-        endcase
-    end
-
 endmodule
-
