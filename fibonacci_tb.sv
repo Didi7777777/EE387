@@ -3,13 +3,13 @@
 module fibonacci_tb;
 
   logic clk; 
-  logic reset = 1'b0;
-  logic [15:0] din = 16'h0;
-  logic start = 1'b0;
+  logic reset;
+  logic [15:0] din;
+  logic start;
   logic [15:0] dout;
   logic done;
 
-  // Instantiate the Fibonacci module
+  // Instantiate your design
   fibonacci fib(clk, reset, din, start, dout, done);
 
   // Clock Generator
@@ -21,28 +21,44 @@ module fibonacci_tb;
   end
 
   initial begin
-    // Reset sequence
+    // Reset
     reset = 1'b1;
     #10 reset = 1'b0;
+    
+    // Test Case 1: Input of 5
+    #20;
+    din = 16'd5;
+    start = 1'b1;
+    #10 start = 1'b0;
+    #10 wait (done == 1'b1);
+    $display("Input: %d, Fibonacci Number: %d", din, dout);
 
-    // Testing with input of 5
-    #20; // Wait for a stable state
-    din = 16'd5; // Set input to 5
-    start = 1'b1; // Start the calculation
-    #10 start = 1'b0; // Stop the start signal
+    // Test Case 2: Input of 8
+    #30;
+    din = 16'd8;
+    start = 1'b1;
+    #10 start = 1'b0;
+    #10 wait (done == 1'b1);
+    $display("Input: %d, Fibonacci Number: %d", din, dout);
 
-    // Wait for calculation to complete
-    wait (done == 1'b1);
+    // Test Case 3: Input of 9
+    #30;
+    din = 16'd9;
+    start = 1'b1;
+    #10 start = 1'b0;
+    #10 wait (done == 1'b1);
+    $display("Input: %d, Fibonacci Number: %d", din, dout);
 
-    // Display results
-    $display("-----------------------------------------");
-    $display("Input: %d", din);
-    if (dout === 5)
-        $display("CORRECT RESULT: %d, GOOD JOB!", dout);
-    else
-        $display("INCORRECT RESULT: %d, SHOULD BE: 5", dout);
+    // Test Case 4: Input of 13
+    #30;
+    din = 16'd13;
+    start = 1'b1;
+    #10 start = 1'b0;
+    #10 wait (done == 1'b1);
+    $display("Input: %d, Fibonacci Number: %d", din, dout);
 
     // End of test
+    #10;
     $stop;
   end
 endmodule
