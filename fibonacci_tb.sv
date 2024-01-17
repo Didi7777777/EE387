@@ -40,9 +40,9 @@ module fibonacci_tb;
         wait(done);
         $display("Fibonacci(%0d) = %0d", din, dout);
 
-        // Fibonacci(5)
+        // Fibonacci(6)
         #20;
-        din = 5;
+        din = 6;
         start = 1'b1;
         #10 start = 1'b0;
         wait(done);
