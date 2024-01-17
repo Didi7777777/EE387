@@ -9,10 +9,8 @@ module fibonacci_tb;
   logic [15:0] dout;
   logic done;
 
-  // instantiate your design
   fibonacci fib(clk, reset, din, start, dout, done);
 
-  // Clock Generator
   always begin
     clk = 1'b0;
     #5;
@@ -26,40 +24,64 @@ module fibonacci_tb;
     #10 reset = 1;
     #10 reset = 0;
     
-    // Test for input 5
-    perform_test(5, 5);
-
-    // Test for input 8
-    perform_test(8, 21);
-
-    // Test for input 9
-    perform_test(9, 34);
-
-    // Test for input 13
-    perform_test(13, 233);
-
-    // Done
-    $stop;
-  end
-
-  // Function to perform individual test
-  task perform_test(input [15:0] test_value, input [15:0] expected_output);
-  begin
-    din = test_value;
+    // Test Case: Input 5
+    #10;
+    din = 16'd5;
     start = 1'b1;
     #10 start = 1'b0;
     wait (done == 1'b1);
     #10; // Additional delay after done is asserted
-
-    // Display Result
     $display("-----------------------------------------");
     $display("Input: %d", din);
-    if (dout === expected_output)
+    if (dout === 5)
         $display("CORRECT RESULT: %d, GOOD JOB!", dout);
     else
-        $display("INCORRECT RESULT: %d, SHOULD BE: %d", dout, expected_output);
-  end
-  endtask
+        $display("INCORRECT RESULT: %d, SHOULD BE: 5", dout);
 
+    // Test Case: Input 8
+    #20;
+    din = 16'd8;
+    start = 1'b1;
+    #10 start = 1'b0;
+    wait (done == 1'b1);
+    #10;
+    $display("-----------------------------------------");
+    $display("Input: %d", din);
+    if (dout === 21)
+        $display("CORRECT RESULT: %d, GOOD JOB!", dout);
+    else
+        $display("INCORRECT RESULT: %d, SHOULD BE: 21", dout);
+
+    // Test Case: Input 9
+    #20;
+    din = 16'd9;
+    start = 1'b1;
+    #10 start = 1'b0;
+    wait (done == 1'b1);
+    #10;
+    $display("-----------------------------------------");
+    $display("Input: %d", din);
+    if (dout === 34)
+        $display("CORRECT RESULT: %d, GOOD JOB!", dout);
+    else
+        $display("INCORRECT RESULT: %d, SHOULD BE: 34", dout);
+
+    // Test Case: Input 13
+    #20;
+    din = 16'd13;
+    start = 1'b1;
+    #10 start = 1'b0;
+    wait (done == 1'b1);
+    #10;
+    $display("-----------------------------------------");
+    $display("Input: %d", din);
+    if (dout === 233)
+        $display("CORRECT RESULT: %d, GOOD JOB!", dout);
+    else
+        $display("INCORRECT RESULT: %d, SHOULD BE: 233", dout);
+
+    // Done
+    $stop;
+  end
 endmodule
 
