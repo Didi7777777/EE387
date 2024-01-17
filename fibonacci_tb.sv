@@ -3,42 +3,63 @@
 module fibonacci_tb;
 
     logic clk; 
-    logic reset = 1'b0;
-    logic [15:0] din = 16'h0;
-    logic start = 1'b0;
+    logic reset;
+    logic [15:0] din;
+    logic start;
     logic [15:0] dout;
     logic done;
 
-    fibonacci fib(clk, reset, din, start, dout, done);
+    fibonacci fib_instance(clk, reset, din, start, dout, done);
 
-    always begin
-        clk = 1'b0;
-        #5;
-        clk = 1'b1;
-        #5;
-    end
+    // Clock generation
+    initial clk = 0;
+    always #5 clk = ~clk; // 10ns clock period
 
+    // Test sequence
     initial begin
-        // Reset
-        reset = 1;
-        #20 reset = 0;
+        // Initialize
+        reset = 1'b1;
+        start = 1'b0;
+        din = 0;
+        #10 reset = 1'b0; // Release reset
 
-        // Test with various inputs
-        fork
-            // Test Case 1: Fibonacci(5)
-            begin
-                #30;
-                din = 5;
-                start = 1'b1;
-                #10 start = 1'b0;
-                wait (done == 1'b1);
-                $display("Input: %d, Result: %d", din, dout);
-            end
-            // Additional Test Cases
-            // Add more test cases here
-        join
+        // Test cases
+        // Fibonacci(0)
+        #20;
+        din = 0;
+        start = 1'b1;
+        #10 start = 1'b0;
+        wait(done);
+        $display("Fibonacci(%0d) = %0d", din, dout);
 
-        // Done
-        #100 $stop;
+        // Fibonacci(1)
+        #20;
+        din = 1;
+        start = 1'b1;
+        #10 start = 1'b0;
+        wait(done);
+        $display("Fibonacci(%0d) = %0d", din, dout);
+
+        // Fibonacci(5)
+        #20;
+        din = 5;
+        start = 1'b1;
+        #10 start = 1'b0;
+        wait(done);
+        $display("Fibonacci(%0d) = %0d", din, dout);
+
+        // Fibonacci(10)
+        #20;
+        din = 10;
+        start = 1'b1;
+        #10 start = 1'b0;
+        wait(done);
+        $display("Fibonacci(%0d) = %0d", din, dout);
+
+        // Additional test cases can be added here following the same pattern
+
+        // Finish simulation
+        #100;
+        $stop;
     end
 endmodule
