@@ -26,26 +26,40 @@ module fibonacci_tb;
     #10 reset = 1;
     #10 reset = 0;
     
-    // Input of 5
-    #10;
-    din = 16'd5;
+    // Test for input 5
+    perform_test(5, 5);
+
+    // Test for input 8
+    perform_test(8, 21);
+
+    // Test for input 9
+    perform_test(9, 34);
+
+    // Test for input 13
+    perform_test(13, 233);
+
+    // Done
+    $stop;
+  end
+
+  // Function to perform individual test
+  task perform_test(input [15:0] test_value, input [15:0] expected_output);
+  begin
+    din = test_value;
     start = 1'b1;
     #10 start = 1'b0;
-    
-    // Wait until calculation is done
     wait (done == 1'b1);
     #10; // Additional delay after done is asserted
 
     // Display Result
     $display("-----------------------------------------");
     $display("Input: %d", din);
-    if (dout === 5)
+    if (dout === expected_output)
         $display("CORRECT RESULT: %d, GOOD JOB!", dout);
     else
-        $display("INCORRECT RESULT: %d, SHOULD BE: 5", dout);
-
-    // Done
-    $stop;
+        $display("INCORRECT RESULT: %d, SHOULD BE: %d", dout, expected_output);
   end
+  endtask
+
 endmodule
 
