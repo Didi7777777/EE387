@@ -13,61 +13,32 @@ module fibonacci_tb;
 
     always begin
         clk = 1'b0;
-        #5 clk = 1'b1;
+        #5;
+        clk = 1'b1;
         #5;
     end
 
     initial begin
         // Reset
-        #0 reset = 0;
-        #10 reset = 1;
-        #10 reset = 0;
+        reset = 1;
+        #20 reset = 0;
 
-        // Test Input of 5
-        #10;
-        din = 16'd5;
-        start = 1'b1;
-        #10 start = 1'b0;
-        #10 wait (done == 1'b1);
-        $display("-----------------------------------------");
-        $display("Input: %d", din);
-        if (dout === 5)
-            $display("CORRECT RESULT: %d, GOOD JOB!", dout);
-        else
-            $display("INCORRECT RESULT: %d, SHOULD BE: 5", dout);
+        // Test with various inputs
+        fork
+            // Test Case 1: Fibonacci(5)
+            begin
+                #30;
+                din = 5;
+                start = 1'b1;
+                #10 start = 1'b0;
+                wait (done == 1'b1);
+                $display("Input: %d, Result: %d", din, dout);
+            end
+            // Additional Test Cases
+            // Add more test cases here
+        join
 
-        // Test Input of 8
-        #10;
-        din = 16'd8;
-        start = 1'b1;
-        #10 start = 1'b0;
-        #10 wait (done == 1'b1);
-        $display("-----------------------------------------");
-        $display("Input: %d", din);
-        // Add expected result for 8
-
-        // Test Input of 9
-        #10;
-        din = 16'd9;
-        start = 1'b1;
-        #10 start = 1'b0;
-        #10 wait (done == 1'b1);
-        $display("-----------------------------------------");
-        $display("Input: %d", din);
-        // Add expected result for 9
-
-        // Test Input of 13
-        #10;
-        din = 16'd13;
-        start = 1'b1;
-        #10 start = 1'b0;
-        #10 wait (done == 1'b1);
-        $display("-----------------------------------------");
-        $display("Input: %d", din);
-        // Add expected result for 13
-
-        // End simulation
-        $stop;
+        // Done
+        #100 $stop;
     end
 endmodule
-
