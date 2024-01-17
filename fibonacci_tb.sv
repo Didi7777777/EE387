@@ -9,10 +9,8 @@ module fibonacci_tb;
   logic [15:0] dout;
   logic done;
 
-  // Instantiate the Fibonacci module
   fibonacci fib(clk, reset, din, start, dout, done);
 
-  // Clock Generator
   always begin
     clk = 1'b0;
     #5;
@@ -21,17 +19,16 @@ module fibonacci_tb;
   end
 
   initial begin
-    // Reset sequence
     reset = 1'b1;
     #10 reset = 1'b0;
 
-    // Testing with input of 5
+    // Test with input of 5
     #20; // Wait for a stable state
-    din = 16'd5; // Set input to 5
-    start = 1'b1; // Start the calculation
-    #10 start = 1'b0; // Stop the start signal
+    din = 16'd5;
+    start = 1'b1;
+    #10 start = 1'b0; // Trigger the start of calculation
 
-    // Wait for calculation to complete
+    // Wait for the calculation to complete
     wait (done == 1'b1);
 
     // Display results
