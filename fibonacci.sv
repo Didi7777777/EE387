@@ -7,49 +7,45 @@ module fibonacci(
     output logic done
 );
 
-    // Local logic signals
     enum logic [1:0] {IDLE, CALCULATING, DONE} state;
-    logic [15:0] fib0, fib1, temp;
-    logic [4:0] count;
+    logic [15:0] fib0, fib1, next_fib;
+    logic [15:0] counter;
 
-    // State Machine and Logic
-    always_ff @(posedge clk, posedge reset) begin
+    always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
             state <= IDLE;
             fib0 <= 0;
             fib1 <= 1;
-            count <= 0;
+            dout <= 0;
             done <= 0;
+            counter <= 0;
         end else begin
             case (state)
                 IDLE: begin
                     if (start) begin
-                        if (din == 0 || din == 1) begin
-                            dout <= din;
-                            done <= 1;
+                        state <= CALCULATING;
+                        counter <= din;
+                        done <= 0;
+                        if (din <= 1) begin
+                            dout <= din; // For 0 or 1, output the number itself
                             state <= DONE;
-                        end else begin
-                            dout <= 0;
-                            count <= din - 2;  // Minus two because first two Fibonacci numbers are set
-                            state <= CALCULATING;
                         end
                     end
                 end
                 CALCULATING: begin
-                    temp <= fib0 + fib1;
-                    fib0 <= fib1;
-                    fib1 <= temp;
-                    if (count == 0) begin
-                        dout <= temp;
-                        done <= 1;
-                        state <= DONE;
+                    if (counter > 1) begin
+                        next_fib = fib0 + fib1;
+                        fib0 <= fib1;
+                        fib1 <= next_fib;
+                        counter <= counter - 1;
                     end else begin
-                        count <= count - 1;
+                        dout <= fib1;
+                        state <= DONE;
                     end
                 end
                 DONE: begin
+                    done <= 1;
                     if (!start) begin
-                        done <= 0;
                         state <= IDLE;
                     end
                 end
