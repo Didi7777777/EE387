@@ -9,8 +9,10 @@ module fibonacci_tb;
   logic [15:0] dout;
   logic done;
 
+  // instantiate your design
   fibonacci fib(clk, reset, din, start, dout, done);
 
+  // Clock Generator
   always begin
     clk = 1'b0;
     #5;
@@ -19,19 +21,22 @@ module fibonacci_tb;
   end
 
   initial begin
-    reset = 1'b1;
-    #10 reset = 1'b0;
-
-    // Test with input of 5
-    #20; // Wait for a stable state
+    // Reset
+    #0 reset = 0;
+    #10 reset = 1;
+    #10 reset = 0;
+    
+    // Input of 5
+    #10;
     din = 16'd5;
     start = 1'b1;
-    #10 start = 1'b0; // Trigger the start of calculation
-
-    // Wait for the calculation to complete
+    #10 start = 1'b0;
+    
+    // Wait until calculation is done
     wait (done == 1'b1);
+    #10; // Additional delay after done is asserted
 
-    // Display results
+    // Display Result
     $display("-----------------------------------------");
     $display("Input: %d", din);
     if (dout === 5)
@@ -39,7 +44,8 @@ module fibonacci_tb;
     else
         $display("INCORRECT RESULT: %d, SHOULD BE: 5", dout);
 
-    // End of test
+    // Done
     $stop;
   end
 endmodule
+
