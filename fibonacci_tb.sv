@@ -30,7 +30,7 @@ module fibonacci_tb;
     start = 1'b1;
     #10 start = 1'b0;
     wait (done == 1'b1);
-    #10; // Additional delay after done is asserted
+    #10;
     $display("-----------------------------------------");
     $display("Input: %d", din);
     if (dout === 5)
@@ -39,7 +39,7 @@ module fibonacci_tb;
         $display("INCORRECT RESULT: %d, SHOULD BE: 5", dout);
 
     // Test Case: Input 8
-    #20;
+    #30; // Additional delay for reset
     din = 16'd8;
     start = 1'b1;
     #10 start = 1'b0;
@@ -53,7 +53,7 @@ module fibonacci_tb;
         $display("INCORRECT RESULT: %d, SHOULD BE: 21", dout);
 
     // Test Case: Input 9
-    #20;
+    #30; // Additional delay for reset
     din = 16'd9;
     start = 1'b1;
     #10 start = 1'b0;
@@ -67,7 +67,7 @@ module fibonacci_tb;
         $display("INCORRECT RESULT: %d, SHOULD BE: 34", dout);
 
     // Test Case: Input 13
-    #20;
+    #30; // Additional delay for reset
     din = 16'd13;
     start = 1'b1;
     #10 start = 1'b0;
@@ -84,3 +84,4 @@ module fibonacci_tb;
     $stop;
   end
 endmodule
+
