@@ -87,6 +87,29 @@ module fibonacci_tb;
     else
         $display("INCORRECT RESULT: %d, SHOULD BE: 34", dout);
 
+    // Reset before next input
+    reset = 1;
+    #20 reset = 0;
+
+    /* ------------- Input of 13 ------------- */
+    // Inputs into module/ Assert start
+    #10;
+    din = 16'd13;
+    start = 1'b1;
+    #10 start = 1'b0;
+    
+    // Wait until calculation is done  
+    wait (done == 1'b1);
+
+    // Display Result
+    $display("-----------------------------------------");
+    $display("Input: %d", din);
+    if (dout === 233)
+        $display("CORRECT RESULT: %d, GOOD JOB!", dout);
+    else
+        $display("INCORRECT RESULT: %d, SHOULD BE: 233", dout);
+
+
     // Done
     $stop;
   end
